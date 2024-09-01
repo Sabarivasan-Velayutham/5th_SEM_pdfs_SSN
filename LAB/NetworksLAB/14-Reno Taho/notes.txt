@@ -1,0 +1,59 @@
+
+commands : 
+
+ns tcpcwnd.tcl
+alias xgraph=~/XGraph4.38_linux64/bin/xgraph
+
+to change color of any one of the graphs 
+open any one of the .xg files and go to the 1st line of that .xg file and add "color=2" 
+
+run -> xgraph congestionreno.xg congestiontahoe.xg
+
+
+my practice :
+set ns [new Simulator]
+$ns rtproto DV
+
+set namfile [open out.nam w]
+$ns namtrace-all $namfile
+set tracefile [open out.tr w]
+$ns trace-all $tracefile
+
+proc finish {} {
+    global ns namfile tracefile
+    $ns flush-trace
+    close $namfile
+    close $trace
+    exec nam out.nam & 
+    exit 0
+}
+
+set node1 [$ns node]
+
+$ns duplex-link $a $b 10Kb 10ms DropTail
+$ns duplex-link-op $a $b orient right-down
+$ns queue-limit $a $b 10
+$ns duplex-link-op $a $b quesPos 0.5
+
+set tcp [new Agent/TCP]
+$tcp class_ 2
+$tcp fid_ 1 
+$ns attach-agent $a $tcp
+set sink [new Agent/TCPSink]
+$ns attach-agent $c $sink
+$ns connect $tcp $sink 
+
+set ftp [new Application/FTP]
+$ftp attach-agent $tcp
+$ftp set type_ FTP
+
+set udp [new Agent/TCP]
+$tcp fid_ 2
+$ns attach-agent $a $udp
+set null [new Agent/Null]
+$ns attach-agent $c $null
+$ns connect $udp $null 
+
+$ns at 0.1 "$cbr start"
+
+$ns run 

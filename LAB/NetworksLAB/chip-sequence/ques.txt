@@ -1,0 +1,6 @@
+
+2 clients send their chip sequences to server which extracts data from the received chip sequences 
+(chip sequences are part of theory, +1 -1 +1 -1)
+
+logic :
+https://www.geeksforgeeks.org/java-cdma-code-division-multiple-access/
